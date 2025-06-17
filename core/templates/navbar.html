@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #313338;">
+    <div class="container">
+        <a class="navbar-brand" href="/">Blendify</a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                    <li class="nav-item d-flex align-items-center">
+                        <a href="{% url 'blend' %}" class="btn me-2 px-3 btn-violet">
+                            Blend
+                        </a>
+                    </li>
+                    {% if user.is_staff %}
+                        <li class="nav-item d-flex align-items-center">
+                            <a href="/admin/" class="btn btn-warning me-2 px-3">
+                                Admin
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item d-flex align-items-center">
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger px-3" style="color: white;">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item d-flex align-items-center">
+                        <a href="{% url 'social:begin' 'spotify' %}" class="btn btn-success px-3" style="color: white;">
+                            Login with Spotify
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

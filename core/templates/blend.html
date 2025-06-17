@@ -1,0 +1,118 @@
+{% load django_bootstrap5 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blendify Web</title>
+        {% bootstrap_css %}
+        <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    </head>
+    <body class="bg-dark">
+
+        {% include 'navbar.html' %}
+        <div class="container py-5">
+
+            {% if success %}
+                <div class="alert alert-success" style="max-width: 600px; margin: 0 auto;">
+                    {{ success }}
+                </div>
+                
+                <div class="card text-white shadow-sm mx-auto mb-4" style="max-width: 600px; background-color: #232428;">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ playlist_name }}</h2>
+                        <p class="card-text">{{ playlist_description }}</p>
+
+                        <!-- Combined Playlist Accordion -->
+                        <div class="accordion mb-4" id="combinedPlaylistAccordion">
+                            <div class="accordion-item bg-dark text-white">
+                                <h3 class="accordion-header" id="combinedPlaylistHeading">
+                                    <button class="accordion-button bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#combinedPlaylistCollapse" aria-expanded="true" aria-controls="combinedPlaylistCollapse">
+                                        New Playlist
+                                    </button>
+                                </h3>
+                                <div id="combinedPlaylistCollapse" class="accordion-collapse collapse show" aria-labelledby="combinedPlaylistHeading" data-bs-parent="#combinedPlaylistAccordion">
+                                    <div class="accordion-body">
+                                        <ul class="list-group list-group-flush">
+                                            {% for song in combined_playlist %}
+                                                <li class="list-group-item bg-dark text-white">{{ song }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Playlists Accordion -->
+                        <div class="accordion" id="individualPlaylistsAccordion">
+                            {% for theme, songs in individual_playlists.items %}
+                                <div class="accordion-item bg-dark text-white">
+                                    <h3 class="accordion-header" id="heading{{ forloop.counter }}">
+                                        <button class="accordion-button bg-dark text-white {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ forloop.counter }}">
+                                            {{ theme|title }}
+                                        </button>
+                                    </h3>
+                                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#individualPlaylistsAccordion">
+                                        <div class="accordion-body">
+                                            <ul class="list-group list-group-flush">
+                                                {% for song in songs %}
+                                                    <li class="list-group-item bg-dark text-white">{{ song }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if error %}
+                        <div class="alert alert-danger" style="max-width: 600px; margin: 0 auto;">{{ error }}</div>
+            {% endif %}
+
+            <div class="card text-white shadow-sm mx-auto mb-4" style="max-width: 600px; background-color: #232428;">
+                <div class="card-body">
+                    <h2 class="card-title">Blendify!</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            
+                            <label for="spotify_playlist">Which playlist are we blending?</label>
+                            <select class="form-control" id="spotify_playlist" name="spotify_playlist" required>
+                                <option value="" disabled selected>Select a playlist</option>
+                                {% for playlist in spotify_playlists %}
+                                    <option value="{{ playlist.id }}">{{ playlist.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" name="spotify_playlist_name" id="spotify_playlist_name">
+
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="playlistRenameSwitch" name="playlist_rename">
+                                <label class="form-check-label" for="playlistRenameSwitch">Playlist Rename</label>
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="theme">What do we want to listen to?</label>
+                            <div id="input-list">
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" name="theme" placeholder="Enter a theme">
+                                    <button type="button" class="btn btn-success ms-2 add-btn">
+                                        <span>&plus;</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+
+        {% bootstrap_javascript %}
+        <script src="{% static 'core/blend.js' %}"></script>
+    </body>
+</html>

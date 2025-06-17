@@ -1,0 +1,25 @@
+{% load django_bootstrap5 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Blendify Web</title>
+        {% bootstrap_css %}
+        <link rel="stylesheet" href="{% static 'core/style.css' %}">
+    </head>
+    <body class="bg-dark">
+
+        {% include 'navbar.html' %}
+        <div class="container py-5">
+            <div class="card text-white shadow-sm" style="background-color: #313338;">
+                <div class="card-body">
+                    <h1 class="card-title">Welcome to Blendify!</h1>
+                    <p class="card-text">Your Django app is working!</p>
+                </div>
+            </div>
+        </div>
+
+        {% bootstrap_javascript %}
+    </body>
+</html>

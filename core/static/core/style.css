@@ -1,0 +1,15 @@
+.btn-violet {
+    background-color: #a330c9;
+    color: #fff;
+    border: none;
+    transition: background-color 0.15s, box-shadow 0.15s;
+}
+.btn-violet:hover,
+.btn-violet:focus {
+    background-color: #8a26a9;
+    color: #fff;
+}
+.btn-violet:active {
+    background-color: #711d84;
+    color: #fff;
+}
