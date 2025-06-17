@@ -6,8 +6,6 @@ services:
     build: .
     volumes:
       - /path/to/your/data:/app/data
-    environment:
-      - DJANGO_DEBUG=False
     depends_on:
       - caddy
 
