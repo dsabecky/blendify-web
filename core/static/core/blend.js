@@ -55,4 +55,22 @@ document.addEventListener('DOMContentLoaded', function() {
             nameInput.value = select.options[select.selectedIndex].text;
         }
     }
+
+    const ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+    const ws_path = ws_scheme + '://' + window.location.host + '/ws/progress/';
+    const socket = new WebSocket(ws_path);
+
+    const toastEl = document.getElementById('blendify-toast');
+    const toastBody = document.getElementById('blendify-toast-body');
+
+    socket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        toastBody.textContent = data.message;
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    };
+
+    socket.onclose = function(e) {
+        console.log('WebSocket closed');
+    };
 });

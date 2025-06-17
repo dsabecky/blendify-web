@@ -8,26 +8,22 @@ import dotenv
 
 dotenv.load_dotenv()
 
-def build_individual_playlists(
-    themes: list[str]
-) -> dict[str, list[str]]:
+def build_individual_playlist(
+    theme: str
+) -> list[str]:
     """
     Build individual playlists for each theme.
     """
 
-    individual_playlists = {}
-    for theme in themes:
-        existing = Playlist.objects.filter(theme__iexact=theme).first()
-        if existing:
-            songs = existing.song_list
-        else:
-            conversation = generate_chatgpt_playlist(theme)
-            songs = [song.strip() for song in invoke_chatgpt(conversation).splitlines() if song.strip()]
-            Playlist.objects.create(theme=theme.lower(), song_list=songs)
+    existing = Playlist.objects.filter(theme__iexact=theme).first()
+    if existing:
+        songs = existing.song_list
+    else:
+        conversation = generate_chatgpt_playlist(theme)
+        songs = [song.strip() for song in invoke_chatgpt(conversation).splitlines() if song.strip()]
+        Playlist.objects.create(theme=theme.lower(), song_list=songs)
 
-        individual_playlists[theme] = songs
-
-    return individual_playlists
+    return songs
 
 def build_combined_playlist(
     individual_playlists: dict[str, list[str]],

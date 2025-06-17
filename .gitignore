@@ -8,3 +8,6 @@ db.sqlite3
 
 # random garbage
 .DS_Store
+
+# static files
+staticfiles/

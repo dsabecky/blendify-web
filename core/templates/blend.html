@@ -14,7 +14,7 @@
         <div class="container py-5">
 
             {% if success %}
-                <div class="alert alert-success" style="max-width: 600px; margin: 0 auto;">
+                <div class="alert alert-success mb-3" style="max-width: 600px; margin: 0 auto;">
                     {{ success }}
                 </div>
                 
@@ -25,17 +25,17 @@
 
                         <!-- Combined Playlist Accordion -->
                         <div class="accordion mb-4" id="combinedPlaylistAccordion">
-                            <div class="accordion-item bg-dark text-white">
+                            <div class="accordion-item custom-accordion-item">
                                 <h3 class="accordion-header" id="combinedPlaylistHeading">
-                                    <button class="accordion-button bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#combinedPlaylistCollapse" aria-expanded="true" aria-controls="combinedPlaylistCollapse">
-                                        New Playlist
+                                    <button class="accordion-button custom-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#combinedPlaylistCollapse" aria-expanded="true" aria-controls="combinedPlaylistCollapse">
+                                        {{ playlist_name }}
                                     </button>
                                 </h3>
                                 <div id="combinedPlaylistCollapse" class="accordion-collapse collapse show" aria-labelledby="combinedPlaylistHeading" data-bs-parent="#combinedPlaylistAccordion">
                                     <div class="accordion-body">
-                                        <ul class="list-group list-group-flush">
+                                        <ul class="list-group custom-list-group">
                                             {% for song in combined_playlist %}
-                                                <li class="list-group-item bg-dark text-white">{{ song }}</li>
+                                                <li class="list-group-item custom-list-group-item">{{ song }}</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -44,19 +44,20 @@
                         </div>
 
                         <!-- Individual Playlists Accordion -->
+                        <h3 class="mb-3">Sourced Playlists</h3>
                         <div class="accordion" id="individualPlaylistsAccordion">
                             {% for theme, songs in individual_playlists.items %}
-                                <div class="accordion-item bg-dark text-white">
+                                <div class="accordion-item custom-accordion-item">
                                     <h3 class="accordion-header" id="heading{{ forloop.counter }}">
-                                        <button class="accordion-button bg-dark text-white {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ forloop.counter }}">
+                                        <button class="accordion-button custom-accordion-btn {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ forloop.counter }}">
                                             {{ theme|title }}
                                         </button>
                                     </h3>
-                                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#individualPlaylistsAccordion">
+                                    <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#individualPlaylistsAccordion">
                                         <div class="accordion-body">
-                                            <ul class="list-group list-group-flush">
+                                            <ul class="list-group custom-list-group">
                                                 {% for song in songs %}
-                                                    <li class="list-group-item bg-dark text-white">{{ song }}</li>
+                                                    <li class="list-group-item custom-list-group-item">{{ song }}</li>
                                                 {% endfor %}
                                             </ul>
                                         </div>
@@ -76,7 +77,7 @@
             <div class="card text-white shadow-sm mx-auto mb-4" style="max-width: 600px; background-color: #232428;">
                 <div class="card-body">
                     <h2 class="card-title">Blendify!</h2>
-                    <form method="post">
+                    <form id="blendify-form" method="post">
                         {% csrf_token %}
                         <div class="form-group mb-3">
                             
@@ -107,6 +108,15 @@
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
+                </div>
+            </div>
+
+            <div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+                <div id="blendify-toast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+                    <div class="d-flex">
+                        <div class="toast-body" id="blendify-toast-body"></div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
                 </div>
             </div>
             

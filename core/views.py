@@ -1,9 +1,22 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from core.blendify_utils import build_individual_playlists, build_combined_playlist, build_song_uris
+from core.blendify_utils import build_individual_playlist, build_combined_playlist, build_song_uris
 from core.spotify_utils import get_spotify_playlists, update_spotify_playlist
 from core.blendify_utils import build_playlist_name, build_playlist_description
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+def send_progress(user_id, message):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"user_{user_id}",
+        {
+            "type": "send_progress",
+            "message": message,
+        }
+    )
 
 def home(request):
     return render(request, 'home.html')
@@ -49,15 +62,22 @@ def blend(request):
         
         # build the individual playlists, or fail gracefully
         try:
-            individual_playlists = build_individual_playlists(themes)
+            individual_playlists = {}
+            for theme in themes:
+                send_progress(request.user.id, f"Sourcing playlist for: {theme}")
+                individual_playlists[theme] = build_individual_playlist(theme)
         except Exception as e:
             return render(request, 'blend.html', {
                 'spotify_playlists': spotify_playlists,
                 'error': f'Error building individual playlists: {e}',
             })
+        
+        print(individual_playlists)
 
         # build the combined playlist, or fail gracefully
+        send_progress(request.user.id, "Building combined playlist")
         try:
+            
             combined_playlist = build_combined_playlist(individual_playlists)
         except Exception as e:
             return render(request, 'blend.html', {
@@ -67,6 +87,7 @@ def blend(request):
 
         # grab URIs for the songs in the combined playlist, or fail gracefully
         try:
+            send_progress(request.user.id, "Adding song URIs to database...")
             song_uris = build_song_uris(request.user, combined_playlist)
         except Exception as e:
             return render(request, 'blend.html', {
@@ -76,6 +97,7 @@ def blend(request):
         
         # build a name for the playlist (if selected), or fail gracefully
         try:
+            send_progress(request.user.id, "Creating a new playlist name...")
             playlist_name = build_playlist_name(combined_playlist, spotify_playlist_name, playlist_rename)
         except Exception as e:
             return render(request, 'blend.html', {
@@ -85,6 +107,7 @@ def blend(request):
 
         # build a description for the playlist (if selected), or fail gracefully
         try:
+            send_progress(request.user.id, "Creating a new playlist description...")
             playlist_description = build_playlist_description(request.user, combined_playlist, spotify_playlist_id, playlist_rename)
         except Exception as e:
             return render(request, 'blend.html', {
@@ -94,6 +117,7 @@ def blend(request):
 
         # push the combined playlist to spotify
         try:
+            send_progress(request.user.id, "Pushing new playlist to Spotify...")
             update_spotify_playlist(request.user, spotify_playlist_id, song_uris, playlist_name, playlist_description)
         except Exception as e:
             return render(request, 'blend.html', {
