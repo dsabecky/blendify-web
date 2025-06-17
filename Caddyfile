@@ -1,0 +1,4 @@
+:8001 {
+	reverse_proxy blendify-web:8000
+	tls /etc/ssl/certs/cert.crt /etc/ssl/private/key.key
+}

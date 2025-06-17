@@ -1,0 +1,24 @@
+services:
+  blendify-web:
+    container_name: blendify-web
+    image: nothaldu/blendify-web
+    hostname: blendify-web
+    build: .
+    volumes:
+      - /path/to/your/data:/app/data
+    environment:
+      - DJANGO_DEBUG=False
+    depends_on:
+      - caddy
+
+  caddy:
+    container_name: caddy
+    hostname: caddy
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "8001:8001"  # Expose 8001 for HTTPS
+    volumes:
+      - /path/to/your/Caddyfile:/etc/caddy/Caddyfile
+      - /path/to/your/cert.crt:/etc/ssl/certs/cert.crt
+      - /path/to/your/key.key:/etc/ssl/private/key.key

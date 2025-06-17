@@ -11,3 +11,6 @@ db.sqlite3
 
 # static files
 staticfiles/
+
+# docker data
+data/
