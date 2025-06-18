@@ -1,18 +1,145 @@
+/* General Formatting */
+html, body {
+    height: 100%;
+}
+
+body {
+    background: linear-gradient(135deg, #232428 0%, #313338 100%);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+
+/* Text Colors */
+.text-spotify { color: #1DB954 !important; }
+.text-violet { color: #a259f7 !important; }
+
+
+/* Navigation Formatting */
+.navbar {
+    width: 99vw;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    min-height: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    background: #313338 !important;
+    position: relative;
+    z-index: 1030;
+    left: 0;
+    right: 0;
+    border: 1px solid rgba(162, 89, 247, 0.08);
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+}
+
+@media (max-width: 991.98px) {
+    .navbar {
+        min-height: 2rem;
+        border-radius: 1rem;
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+        width: 99vw;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+
+/* Navigation Buttons */
+.navbar .btn {
+    border-radius: 0.75rem;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 1.25rem;
+    box-shadow: none;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+/* Button Colors */
 .btn-violet {
-    background-color: #a330c9;
+    background-color: #a259f7;
     color: #fff;
-    border: none;
-    transition: background-color 0.15s, box-shadow 0.15s;
 }
 .btn-violet:hover,
 .btn-violet:focus {
     background-color: #8a26a9;
     color: #fff;
 }
-.btn-violet:active {
-    background-color: #711d84;
+
+.btn-success {
+    background-color: #1DB954;
+    color: #fff;
+    border: none;
+}
+.btn-success:hover,
+.btn-success:focus {
+    background-color: #169943;
     color: #fff;
 }
+
+.btn-warning {
+    background-color: #ffd600;
+    color: #232428;
+    border: none;
+}
+.btn-warning:hover,
+.btn-warning:focus {
+    background-color: #e6be00;
+    color: #232428;
+}
+
+.btn-danger {
+    background-color: #ff4b4b;
+    color: #fff;
+    border: none;
+}
+.btn-danger:hover,
+.btn-danger:focus {
+    background-color: #d93636;
+    color: #fff;
+}
+
+/* Checkbox Formatting */
+.form-check-input:checked {
+    background-color: #a259f7;
+    border-color: #a259f7;
+    box-shadow: 0 0 0 0.25rem rgba(162, 89, 247, 0.25);
+}
+
+.form-check-input:focus {
+    border-color: #a259f7;
+    box-shadow: 0 0 0 0.25rem rgba(162, 89, 247, 0.25);
+}
+
+
+
+.main-content {
+    flex: 1 0 auto;
+}
+
+.footer { flex-shrink: 0; }
+
+/* Welcome Page */
+.welcome-icon {
+    font-size: 3rem;
+    color: #a259f7;
+}
+
+/* tbd */
+.card-blur {
+    background: rgba(49, 51, 56, 0.95);
+    backdrop-filter: blur(4px);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
 
 .custom-accordion-item {
     background-color: #5b5b5c;
