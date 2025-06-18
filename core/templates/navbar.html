@@ -1,7 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm" style="background-color: #313338;">
     <div class="container">
         <a class="navbar-brand" href="/">Blendify</a>
-        <div class="collapse navbar-collapse justify-content-end">
+        <!-- Toggler button for mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Collapsible content -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                     <li class="nav-item d-flex align-items-center">
