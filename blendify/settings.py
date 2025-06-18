@@ -10,29 +10,108 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+####################################################################
+# Module Imports
+####################################################################
+
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+
+
+####################################################################
+# Base Settings & Environment Variables
+####################################################################
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(dotenv_path=BASE_DIR / 'data' / '.env')
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-SOCIAL_AUTH_SPOTIFY_KEY = os.getenv('SPOTIFY_CLIENT_ID')
-SOCIAL_AUTH_SPOTIFY_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
-
-# SECURITY WARNING: don't run with debug turned on in production!
+# Debug Mode, controlled from ENV
 DEBUG = os.getenv('DJANGO_DEBUG')
 
+# Hostnames, controlled from ENV
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(',')
 
+# Where our URL structure is located
+ROOT_URLCONF = 'blendify.urls'
 
-# Application definition
+# Where our static files will live after: python3 migrate.py collectstatic
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Timezone stuff
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'America/New_York'
+USE_I18N = True
+USE_TZ = True
+
+
+####################################################################
+# Security & API Keys
+####################################################################
+
+AUTH_PASSWORD_VALIDATORS = [
+    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator' },
+    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator' },
+    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator' },
+    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator' },
+]
+
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') # Django Secret Key
+SOCIAL_AUTH_SPOTIFY_KEY = os.getenv('SPOTIFY_CLIENT_ID') # Spotify Client ID
+SOCIAL_AUTH_SPOTIFY_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET') # Spotify Client Secret
+
+# We use Caddy to handle SSL, so we allow for forwarding
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Spotify Integration
+SOCIAL_AUTH_SPOTIFY_KEY = os.getenv('SPOTIFY_CLIENT_ID')
+SOCIAL_AUTH_SPOTIFY_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
+SOCIAL_AUTH_SPOTIFY_SCOPE = [
+    'user-library-read',
+    'playlist-read-private',
+    'playlist-read-collaborative',
+    'playlist-modify-public',
+    'playlist-modify-private',
+]
+
+# Authentication paths
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+
+####################################################################
+# Database Config
+####################################################################
+
+# SQLite stored in /data
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'data' / 'db.sqlite3',
+    }
+}
+
+# Our default field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+####################################################################
+# Django Core
+####################################################################
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.spotify.SpotifyOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# Channels are how we handle toast notifications
+CHANNEL_LAYERS = {
+    "default": { "BACKEND": "channels.layers.InMemoryChannelLayer" }
+}
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -47,19 +126,6 @@ INSTALLED_APPS = [
     'channels',
 ]
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-AUTHENTICATION_BACKENDS = (
-    'social_core.backends.spotify.SpotifyOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -70,8 +136,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-
-ROOT_URLCONF = 'blendify.urls'
 
 TEMPLATES = [
     {
@@ -90,63 +154,5 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'blendify.wsgi.application'
-ASGI_APPLICATION = 'blendify.asgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'data' / 'db.sqlite3',
-    }
-}
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator' },
-    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator' },
-    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator' },
-    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator' },
-]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Spotify Integration
-SOCIAL_AUTH_SPOTIFY_KEY = os.getenv('SPOTIFY_CLIENT_ID')
-SOCIAL_AUTH_SPOTIFY_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
-SOCIAL_AUTH_SPOTIFY_SCOPE = [
-    'user-library-read',
-    'playlist-read-private',
-    'playlist-read-collaborative',
-    'playlist-modify-public',
-    'playlist-modify-private',
-]
-
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+ASGI_APPLICATION = 'blendify.asgi.application' # Async support
+WSGI_APPLICATION = 'blendify.wsgi.application' # Sync support
