@@ -1,0 +1,56 @@
+.custom-accordion-item {
+    background-color: #232428 !important;
+    border: none !important;
+    border-radius: 0.75rem !important;
+    margin-bottom: 1rem;
+}
+
+.custom-accordion-btn {
+    background-color: #2c2f34 !important;
+    color: #a259f7 !important;
+    font-weight: 600;
+    border: none !important;
+    border-radius: 0.75rem !important;
+    box-shadow: none !important;
+    padding: 1rem 1.25rem;
+    transition: background 0.15s, color 0.15s;
+}
+
+.custom-accordion-btn::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%23a259f7' stroke-width='2' d='M2 6l6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+
+.custom-accordion-btn:not(.collapsed) {
+    color: #fff !important;
+    background-color: #a259f7 !important;
+}
+
+.custom-accordion-btn:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%23fff' stroke-width='2' d='M2 10l6-6 6 6'/%3E%3C/svg%3E") !important;
+}
+
+.custom-list-group {
+    background-color: #232428;
+    border-radius: 0.5rem;
+    padding: 0;
+}
+
+.custom-list-group-item {
+    background-color: #2c2f34;
+    color: #bfc7d5;
+    border: none;
+    border-bottom: 1px solid #35363a;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: background 0.2s, color 0.2s;
+}
+
+.custom-list-group-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.custom-list-group-item:hover {
+    background-color: #35363a;
+    color: #a259f7;
+}

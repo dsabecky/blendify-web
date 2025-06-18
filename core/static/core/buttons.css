@@ -1,0 +1,43 @@
+/* Button Colors */
+.btn-violet {
+    background-color: #a259f7;
+    color: #fff;
+}
+.btn-violet:hover,
+.btn-violet:focus {
+    background-color: #8a26a9;
+    color: #fff;
+}
+
+.btn-success {
+    background-color: #1DB954;
+    color: #fff;
+    border: none;
+}
+.btn-success:hover,
+.btn-success:focus {
+    background-color: #169943;
+    color: #fff;
+}
+
+.btn-warning {
+    background-color: #ffd600;
+    color: #232428;
+    border: none;
+}
+.btn-warning:hover,
+.btn-warning:focus {
+    background-color: #e6be00;
+    color: #232428;
+}
+
+.btn-danger {
+    background-color: #ff4b4b;
+    color: #fff;
+    border: none;
+}
+.btn-danger:hover,
+.btn-danger:focus {
+    background-color: #d93636;
+    color: #fff;
+}

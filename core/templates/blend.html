@@ -5,12 +5,24 @@
 <html>
 <head>
     <title>Blendify Web</title>
+    <link rel="icon" href="{% static 'core/favicon.ico' %}">
+
     {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'core/accordion-list.css' %}">
+    <link rel="stylesheet" href="{% static 'core/buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'core/checkbox.css' %}">
+    <link rel="stylesheet" href="{% static 'core/dropdown.css' %}">
+    <link rel="stylesheet" href="{% static 'core/input-box.css' %}">
+    <link rel="stylesheet" href="{% static 'core/navigation.css' %}">
+    <link rel="stylesheet" href="{% static 'core/text.css' %}">
+
     <link rel="stylesheet" href="{% static 'core/style.css' %}">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <body class="bg-dark">
 
+    <!-- Navigation Bar -->
     {% include 'navbar.html' %}
 
     <div class="container d-flex justify-content-center align-items-center main-content" style="min-height: 80vh;">
@@ -19,24 +31,39 @@
                 <h2 class="card-title text-center mb-3 fw-bold" style="font-size: 2rem;">
                     <i class="bi bi-magic text-violet"></i> Blendify!
                 </h2>
+
+                <!-- Toast Notifications -->
+                <div id="blendify-toast-container"></div>
+
+                <!-- Error Message -->
                 {% if error %}
                     <div class="alert alert-danger mb-3">{{ error }}</div>
                 {% endif %}
+
+                <!-- Success Message -->
                 {% if success %}
                     <div class="alert alert-success mb-3">{{ success }}</div>
                 {% endif %}
 
+                {% if not success %}
                 <form id="blendify-form" method="post" class="mb-4">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="spotify_playlist" class="form-label">Which playlist are we blending?</label>
                         <select class="form-select" id="spotify_playlist" name="spotify_playlist" required>
                             <option value="" disabled selected>Select a playlist</option>
+                            <option value="create_new">+ Create a new playlist</option>
                             {% for playlist in spotify_playlists %}
                                 <option value="{{ playlist.id }}">{{ playlist.name }}</option>
                             {% endfor %}
                         </select>
                         <input type="hidden" name="spotify_playlist_name" id="spotify_playlist_name">
+                        
+                        <!-- New playlist name input (hidden by default) -->
+                        <div id="new-playlist-section" class="mt-3" style="display: none;">
+                            <label for="new_playlist_name" class="form-label">What are we naming this?</label>
+                            <input type="text" class="form-control" id="new_playlist_name" name="new_playlist_name" placeholder="Enter playlist name">
+                        </div>
                     </div>
                     <div class="form-check form-switch mb-3">
                         <input class="form-check-input" type="checkbox" id="playlistRenameSwitch" name="playlist_rename">
@@ -57,6 +84,7 @@
                         <i class="bi bi-magic"></i> Submit
                     </button>
                 </form>
+                {% endif %}
 
                 {% if success %}
                     <div class="text-center mb-4">
@@ -68,7 +96,7 @@
                         <div class="accordion-item custom-accordion-item">
                             <h3 class="accordion-header" id="combinedPlaylistHeading">
                                 <button class="accordion-button custom-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#combinedPlaylistCollapse" aria-expanded="true" aria-controls="combinedPlaylistCollapse">
-                                    <i class="bi bi-music-note-list text-violet"></i> {{ playlist_name }}
+                                    <i class="bi bi-music-note-list text-violet me-2"></i> {{ playlist_name }}
                                 </button>
                             </h3>
                             <div id="combinedPlaylistCollapse" class="accordion-collapse collapse show" aria-labelledby="combinedPlaylistHeading" data-bs-parent="#combinedPlaylistAccordion">
@@ -88,11 +116,11 @@
                         {% for theme, songs in individual_playlists.items %}
                             <div class="accordion-item custom-accordion-item">
                                 <h3 class="accordion-header" id="heading{{ forloop.counter }}">
-                                    <button class="accordion-button custom-accordion-btn {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{ forloop.counter }}">
+                                    <button class="accordion-button custom-accordion-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
                                         {{ theme|title }}
                                     </button>
                                 </h3>
-                                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#individualPlaylistsAccordion">
+                                <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#individualPlaylistsAccordion">
                                     <div class="accordion-body">
                                         <ul class="list-group custom-list-group">
                                             {% for song in songs %}
@@ -109,16 +137,7 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
-        <div id="blendify-toast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-            <div class="d-flex">
-                <div class="toast-body" id="blendify-toast-body"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Footer -->
     {% include 'footer.html' %}
     {% bootstrap_javascript %}
     <script src="{% static 'core/blend.js' %}"></script>

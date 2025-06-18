@@ -1,0 +1,44 @@
+.navbar-float-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    padding: 0.5rem 0.5rem 0 0.5rem;
+}
+
+.navbar {
+    width: 100%;
+    max-width: 99vw;
+    min-height: 4rem;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    background: #313338 !important;
+    border: 1px solid rgba(162, 89, 247, 0.08);
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-float-wrapper {
+        padding: 0.25rem;
+    }
+    
+    .navbar {
+        min-height: 2rem;
+        border-radius: 1rem;
+        width: 100%;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+}
+
+.navbar .btn {
+    border-radius: 0.75rem;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.5rem 1.25rem;
+    box-shadow: none;
+    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}

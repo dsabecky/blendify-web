@@ -1,187 +1,57 @@
-/* General Formatting */
-html, body {
-    height: 100%;
+/* Main Scaffold & Colors */
+html {
+    background: linear-gradient(135deg, #232428 0%, #313338 100%);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color: #232428;
 }
 
 body {
-    background: linear-gradient(135deg, #232428 0%, #313338 100%);
+    background: transparent;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-
-/* Text Colors */
-.text-spotify { color: #1DB954 !important; }
-.text-violet { color: #a259f7 !important; }
-
-
-/* Navigation Formatting */
-.navbar {
-    width: 99vw;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    min-height: 3rem;
-    border-radius: 1rem;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-    background: #313338 !important;
-    position: relative;
-    z-index: 1030;
+body::before {
+    content: '';
+    position: fixed;
+    top: -100vh;
     left: 0;
-    right: 0;
-    border: 1px solid rgba(162, 89, 247, 0.08);
-    backdrop-filter: blur(6px);
-    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    background: #232428;
+    z-index: -1;
 }
 
-@media (max-width: 991.98px) {
-    .navbar {
-        min-height: 2rem;
-        border-radius: 1rem;
-        margin-top: 0.25rem;
-        margin-bottom: 0.25rem;
-        margin-left: 0.25rem;
-        margin-right: 0.25rem;
-        width: 99vw;
-        padding-left: 0.5rem;
-        padding-right: 0.5rem;
-    }
+body::after {
+    content: '';
+    position: fixed;
+    bottom: -100vh;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #232428;
+    z-index: -1;
 }
-
-/* Navigation Buttons */
-.navbar .btn {
-    border-radius: 0.75rem;
-    font-weight: 500;
-    font-size: 1rem;
-    padding: 0.5rem 1.25rem;
-    box-shadow: none;
-    transition: background 0.15s, color 0.15s, box-shadow 0.15s;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-}
-
-/* Button Colors */
-.btn-violet {
-    background-color: #a259f7;
-    color: #fff;
-}
-.btn-violet:hover,
-.btn-violet:focus {
-    background-color: #8a26a9;
-    color: #fff;
-}
-
-.btn-success {
-    background-color: #1DB954;
-    color: #fff;
-    border: none;
-}
-.btn-success:hover,
-.btn-success:focus {
-    background-color: #169943;
-    color: #fff;
-}
-
-.btn-warning {
-    background-color: #ffd600;
-    color: #232428;
-    border: none;
-}
-.btn-warning:hover,
-.btn-warning:focus {
-    background-color: #e6be00;
-    color: #232428;
-}
-
-.btn-danger {
-    background-color: #ff4b4b;
-    color: #fff;
-    border: none;
-}
-.btn-danger:hover,
-.btn-danger:focus {
-    background-color: #d93636;
-    color: #fff;
-}
-
-/* Checkbox Formatting */
-.form-check-input:checked {
-    background-color: #a259f7;
-    border-color: #a259f7;
-    box-shadow: 0 0 0 0.25rem rgba(162, 89, 247, 0.25);
-}
-
-.form-check-input:focus {
-    border-color: #a259f7;
-    box-shadow: 0 0 0 0.25rem rgba(162, 89, 247, 0.25);
-}
-
-
 
 .main-content {
     flex: 1 0 auto;
+    padding-top: 5rem;
+    padding-bottom: 2rem;
 }
 
-.footer { flex-shrink: 0; }
+.footer { flex-shrink: 0; padding-top: 2rem; }
 
-/* Welcome Page */
 .welcome-icon {
     font-size: 3rem;
     color: #a259f7;
 }
 
-/* tbd */
+/* Card Formatting */
 .card-blur {
     background: rgba(49, 51, 56, 0.95);
     backdrop-filter: blur(4px);
     border-radius: 1.5rem;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-}
-
-
-.custom-accordion-item {
-    background-color: #5b5b5c;
-    border: none;
-}
-
-.custom-accordion-btn {
-    background-color: #5b5b5c;
-    color: #bfc7d5; /* Soft blue-gray */
-    font-weight: 500;
-    border: none;
-    box-shadow: none;
-}
-
-.custom-accordion-btn:not(.collapsed) {
-    color: #e0e6ed; /* Lighter gray when open */
-    background-color: #5b5b5c;
-    box-shadow: none;
-}
-
-.custom-list-group {
-    background-color: #232428;
-    border-radius: 0.5rem;
-    padding: 0;
-}
-
-.custom-list-group-item {
-    background-color: #2c2f34;
-    color: #bfc7d5; /* Soft blue-gray */
-    border: none;
-    border-bottom: 1px solid #35363a;
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-    transition: background 0.2s, color 0.2s;
-}
-
-.custom-list-group-item:last-child {
-    border-bottom: none;
-    border-radius: 0 0 0.5rem 0.5rem;
-}
-
-.custom-list-group-item:hover {
-    background-color: #35363a;
-    color: #f7c873; /* Soft gold on hover */
 }
