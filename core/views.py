@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from core.blendify_utils import build_individual_playlist, build_combined_playlist, build_song_uris
-from core.spotify_utils import get_spotify_playlists, update_spotify_playlist
+from core.spotify_utils import get_spotify_playlists, update_spotify_playlist, create_spotify_playlist
 from core.blendify_utils import build_playlist_name, build_playlist_description
 
 from channels.layers import get_channel_layer
@@ -59,6 +59,24 @@ def blend(request):
                 'spotify_playlists': spotify_playlists,
                 'error': 'Please enter at least two themes.',
             })
+        
+        # we're creating a new playlist
+        if spotify_playlist_id == 'create_new':
+            new_playlist_name = request.POST.get('new_playlist_name', '').strip()
+            if not new_playlist_name:
+                return render(request, 'blend.html', {
+                    'spotify_playlists': spotify_playlists,
+                    'error': 'Please enter a name for the new playlist.',
+                })
+            
+            try:
+                spotify_playlist_id = create_spotify_playlist(request.user, new_playlist_name)
+                spotify_playlist_name = new_playlist_name
+            except Exception as e:
+                return render(request, 'blend.html', {
+                    'spotify_playlists': spotify_playlists,
+                    'error': f'Error creating new playlist: {e}',
+                })
         
         # build the individual playlists, or fail gracefully
         try:
@@ -136,55 +154,3 @@ def blend(request):
     return render(request, 'blend.html', {
         'spotify_playlists': spotify_playlists,
     })
-
-
-
-
-
-
-
-
-
-        
-        
-
-    return render(request, 'blend.html', {
-        'spotify_playlists': spotify_playlists,
-        'error': error,
-    })
-
-# @login_required
-# def blend(request):
-#     error = None
-#     if request.method == 'POST':
-#         action = request.POST.get('action')
-
-#         if action == 'push':
-#             selected_playlist_id = request.POST.get('spotify_playlist')
-
-
-#         themes = [theme.strip() for theme in request.POST.getlist('theme') if theme.strip()]
-#         spotify_playlists = get_spotify_playlists(request.user)
-#         playlists = {}
-
-#         for theme in themes:
-#             existing = Playlist.objects.filter(theme__iexact=theme).first()
-
-#             if existing:
-#                 response_text = existing.playlist_text
-
-#             else:
-#                 conversation = chatgpt_playlist_prompt(theme)
-#                 response_text = invoke_chatgpt(conversation)
-#                 Playlist.objects.create(theme=theme, playlist_text=response_text)
-
-#             playlists[theme] = response_text.splitlines() if response_text else []
-
-#         return render(request, 'blend.html', {
-#             'themes': themes,
-#             'playlists': playlists,
-#             'error': error,
-#             'spotify_playlists': sorted(spotify_playlists, key=lambda x: x['name'].lower()),
-#         })
-
-#     return render(request, 'blend.html')

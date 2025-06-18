@@ -94,16 +94,48 @@ def build_song_uris(
     song_list: list[str],
 ) -> list[str]:
     """
-    Get the URIs for songs in a combined playlist.
+    Get URIs for songs using batch processing.
     """
-    song_uris = []
-    for song in song_list:
-        if Song.objects.filter(name__iexact=song).exists():
-            song_uri = Song.objects.get(name__iexact=song).spotify_uri
-        else:
-            song_uri = get_spotify_song_uri(user, song)
-            Song.objects.create(name=song, spotify_uri=song_uri)
+    if not song_list:
+        return []
+    
+    cached_songs = {}
+    existing_songs = Song.objects.filter(
+        name__iregex=r'^(' + '|'.join([
+            song.replace('(', r'\(').replace(')', r'\)').replace('[', r'\[').replace(']', r'\]')
+            for song in song_list
+        ]) + ')$'
+    ).values('name', 'spotify_uri')
+    
+    for song_obj in existing_songs:
+        for original_song in song_list:
+            if song_obj['name'].lower() == original_song.lower() and song_obj['spotify_uri']:
+                cached_songs[original_song] = song_obj['spotify_uri']
+                break
+    
+    uncached_songs = [song for song in song_list if song not in cached_songs]
+    
+    if uncached_songs:
+        new_uris = get_spotify_song_uris(user, uncached_songs)
         
-        song_uris.append(song_uri)
-
-    return song_uris
+        songs_to_create = []
+        for song, uri in new_uris.items():
+            if uri:
+                songs_to_create.append(Song(name=song, spotify_uri=uri))
+                cached_songs[song] = uri
+        
+        if songs_to_create:
+            try:
+                Song.objects.bulk_create(songs_to_create, ignore_conflicts=True)
+            except Exception as e:
+                print(f"Error bulk creating songs: {e}")
+                for song_obj in songs_to_create:
+                    try:
+                        Song.objects.get_or_create(
+                            name__iexact=song_obj.name,
+                            defaults={'name': song_obj.name, 'spotify_uri': song_obj.spotify_uri}
+                        )
+                    except Exception:
+                        pass  # Skip problematic songs
+    
+    return [cached_songs.get(song) for song in song_list if cached_songs.get(song)]
