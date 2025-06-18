@@ -55,20 +55,18 @@ DJANGO_DEBUG=True
 ### 3. Run migrations
 
 ```bash
-uv run manage.py makemigrations
 uv run manage.py migrate
 ```
 
-### 4. Create a superuser (optional, for admin)
-
+### 4. Build static files
 ```bash
-uv run manage.py createsuperuser
+uv run manage.py collectstatic
 ```
 
-### 5. Run the development server
+### 5. Run the server
 
 ```bash
-uv run manage.py runserver
+uv run daphne blendify.asgi:application
 ```
 ---
 
@@ -79,7 +77,6 @@ uv run manage.py runserver
 3. **Enter two or more themes** (add more with the plus button)
 4. **(Optional) Toggle "Playlist Rename"** to let AI name your playlist
 5. **Submit** to blend your themes into a new playlist!
-6. **Admin panel** available at `/admin/` for staff users
 
 ---
 
@@ -87,15 +84,3 @@ uv run manage.py runserver
 
 - **Change playlist length:** Set `PLAYLIST_LENGTH` in `.env`
 - **Change OpenAI model/temperature:** Set `OPENAI_MODEL` and `OPENAI_TEMPERATURE` in `.env`
-
----
-
-## License
-
-MIT
-
----
-
-## Contributing
-
-Pull requests welcome! Please open an issue first to discuss changes.
