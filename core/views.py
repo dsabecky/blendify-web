@@ -21,6 +21,9 @@ def send_progress(user_id, message):
 def home(request):
     return render(request, 'home.html')
 
+def lorumipsum(request):
+    return render(request, 'lorumipsum.html')
+
 @login_required
 def blend(request):
 
