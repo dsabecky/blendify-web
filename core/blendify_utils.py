@@ -1,7 +1,8 @@
 from core.openai_utils import generate_chatgpt_playlist, generate_chatgpt_playlist_description, generate_chatgpt_playlist_name, invoke_chatgpt
-from core.spotify_utils import get_spotify_playlist_description, get_spotify_song_uri
+from core.spotify_utils import get_spotify_playlist_description, get_spotify_song_uris
 
 from core.models import Playlist, Song
+
 import random
 import os
 import dotenv
@@ -29,17 +30,36 @@ def build_combined_playlist(
     individual_playlists: dict[str, list[str]],
 ) -> list[str]:
     """
-    Build a combined playlist from the individual playlists.
+    Build a combined playlist from the individual playlists with even distribution.
     """
-    sample_size = int(int(os.getenv('PLAYLIST_LENGTH', 10)) / len(individual_playlists))
 
+    total_length = int(os.getenv('PLAYLIST_LENGTH', 10))
+    sample_size = total_length // len(individual_playlists)
+    remainder = total_length % len(individual_playlists)
+    
     combined_playlist = []
-    for playlist in individual_playlists.values():
-        unique_songs = [song for song in playlist if song not in combined_playlist]
-
+    used_songs = set()
+    
+    for i, (theme, playlist) in enumerate(individual_playlists.items()):
+        current_sample_size = sample_size + (1 if i < remainder else 0)
+        
+        unique_songs = [song for song in playlist if song.lower() not in used_songs]
+        
         random.shuffle(unique_songs)
-        combined_playlist.extend(unique_songs[:sample_size])
-
+        selected_songs = unique_songs[:current_sample_size]
+        
+        combined_playlist.extend(selected_songs)
+        used_songs.update(song.lower() for song in selected_songs)
+        
+    if len(combined_playlist) < total_length:
+        all_remaining = []
+        for playlist in individual_playlists.values():
+            all_remaining.extend([song for song in playlist if song.lower() not in used_songs])
+        
+        random.shuffle(all_remaining)
+        needed = total_length - len(combined_playlist)
+        combined_playlist.extend(all_remaining[:needed])
+    
     return combined_playlist
 
 def build_playlist_name(
