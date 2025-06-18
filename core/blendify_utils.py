@@ -35,13 +35,10 @@ def build_combined_playlist(
 
     combined_playlist = []
     for playlist in individual_playlists.values():
-        temp_playlist = []
-        while len(temp_playlist) < sample_size:
-            song = random.choice(playlist)
-            if song not in temp_playlist and song not in combined_playlist:
-                temp_playlist.append(song)
+        unique_songs = [song for song in playlist if song not in combined_playlist]
 
-        combined_playlist.extend(temp_playlist)
+        random.shuffle(unique_songs)
+        combined_playlist.extend(unique_songs[:sample_size])
 
     return combined_playlist
 
