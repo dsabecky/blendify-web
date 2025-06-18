@@ -24,13 +24,15 @@ def get_spotify_playlists(
     user,
 ) -> list[dict]:
     """
-    Get the user's Spotify playlists.
+    Get the user's Spotify playlists that they can modify (owned or collaborative).
     """
-    # Get the user's Spotify social auth
+
     social = user.social_auth.filter(provider='spotify').first()
     if not social:
         return []
     access_token = social.extra_data['access_token']
+    spotify_id = social.uid
+
     url = "https://api.spotify.com/v1/me/playlists"
     headers = {"Authorization": f"Bearer {access_token}"}
     playlists = []
@@ -41,10 +43,11 @@ def get_spotify_playlists(
             break
         data = resp.json()
         for item in data.get('items', []):
-            playlists.append({
-                'id': item['id'],
-                'name': item['name'],
-            })
+            if item['owner']['id'] == spotify_id or item.get('collaborative', False):
+                playlists.append({
+                    'id': item['id'],
+                    'name': item['name'],
+                })
         next_url = data.get('next')
 
     playlists.sort(key=lambda x: x['name'].lower())
