@@ -71,13 +71,10 @@ def blend(request):
                 'spotify_playlists': spotify_playlists,
                 'error': f'Error building individual playlists: {e}',
             })
-        
-        print(individual_playlists)
 
         # build the combined playlist, or fail gracefully
         send_progress(request.user.id, "Building combined playlist")
         try:
-            
             combined_playlist = build_combined_playlist(individual_playlists)
         except Exception as e:
             return render(request, 'blend.html', {
