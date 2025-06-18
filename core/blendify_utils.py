@@ -9,7 +9,7 @@ import dotenv
 dotenv.load_dotenv()
 
 def build_individual_playlist(
-    theme: str
+    theme: str,
 ) -> list[str]:
     """
     Build individual playlists for each theme.
