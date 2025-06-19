@@ -35,7 +35,7 @@ def create_spotify_playlist(
     playlist_data = resp.json()
     return playlist_data['id']
 
-def fetch_song_uri(
+def get_spotify_song_uri(
     access_token: str,
     song_title: str,
 ) -> str | None:
@@ -140,7 +140,7 @@ def get_spotify_song_uris(
     access_token = social.extra_data['access_token']
     
     def search_single_song(song):
-        return song, fetch_song_uri(access_token, song)
+        return song, get_spotify_song_uri(access_token, song)
     
     results = {}
     
