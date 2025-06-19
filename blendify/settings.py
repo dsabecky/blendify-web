@@ -77,9 +77,9 @@ SOCIAL_AUTH_SPOTIFY_SCOPE = [
 ]
 
 # Authentication paths
-LOGIN_URL = 'login'
+LOGIN_URL = '/'
 LOGOUT_URL = 'logout'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'blend'
 LOGOUT_REDIRECT_URL = '/'
 
 

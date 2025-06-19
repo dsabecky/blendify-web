@@ -29,10 +29,14 @@
                     <p class="card-text mb-4 text-secondary" style="font-size: 1.1rem;">
                         Effortlessly blend your favorite Spotify playlists and discover new music vibes, powered by AI.
                     </p>
+                    {% if user.is_authenticated %}
                     <a href="{% url 'blend' %}" class="btn btn-violet btn-lg w-100 mb-2">
                         <i class="bi bi-magic"></i> Start Blending
                     </a>
-                    {% if not user.is_authenticated %}
+                    {% else %}
+                    <a href="{% url 'social:begin' 'spotify' %}" class="btn btn-success btn-lg w-100 mb-2">
+                        <i class="bi bi-spotify"></i> Login with Spotify
+                    </a>
                     <div class="text-muted mt-3 text-spotify" style="font-size: 0.95rem;">
                         <i class="bi bi-spotify"></i> Login with Spotify to get started.
                     </div>
