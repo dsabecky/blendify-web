@@ -6,14 +6,28 @@ from core.models import Playlist, Song
 import random
 import os
 import dotenv
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 dotenv.load_dotenv()
+
+def build_individual_playlists(
+    themes: list[str],
+) -> dict[str, list[str]]:
+    """
+    Handler function for batch processing of ChatGPT generated playlists.
+    Returns a dictionary of themes, with their corresponding playlist.
+    """
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {executor.submit(build_individual_playlist, theme): theme for theme in themes}
+        results = {futures[future]: future.result() for future in as_completed(futures)}
+    return results
 
 def build_individual_playlist(
     theme: str,
 ) -> list[str]:
     """
-    Build individual playlists for each theme.
+    Build an individual playlist for a given theme using ChatGPT.
+    Returns a list of songs.
     """
 
     existing = Playlist.objects.filter(theme__iexact=theme).first()

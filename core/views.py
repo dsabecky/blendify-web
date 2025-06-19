@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
-from core.blendify_utils import build_individual_playlist, build_combined_playlist, build_song_uris
+from core.blendify_utils import build_individual_playlists, build_combined_playlist, build_song_uris
 from core.spotify_utils import get_spotify_playlists, update_spotify_playlist, create_spotify_playlist, update_spotify_access_token
 from core.blendify_utils import build_playlist_name, build_playlist_description
 
@@ -83,10 +83,8 @@ def blend(request):
         
         # build the individual playlists
         try:
-            individual_playlists = {}
-            for theme in themes:
-                send_progress(request.user.id, f"Sourcing playlist for: {theme}")
-                individual_playlists[theme] = build_individual_playlist(theme)
+            send_progress(request.user.id, "Sourcing playlists for:<br>" + "<br>".join([f" * {theme}" for theme in themes]))
+            individual_playlists = build_individual_playlists(themes)
         except Exception as e:
             return render(request, 'blend.html', {
                 'spotify_playlists': spotify_playlists,
