@@ -27,8 +27,21 @@ def lorumipsum(request):
 @login_required
 def blend(request):
 
-    update_spotify_access_token(request.user) # update the access token if it's expired
-    spotify_playlists = get_spotify_playlists(request.user)
+    # update the access token if it's expired
+    try:
+        update_spotify_access_token(request.user)
+    except Exception as e:
+        return render(request, 'blend.html', {
+            'error': f'Error updating Spotify access token: {e}',
+        })
+    
+    # get the user's spotify playlists
+    try:
+        spotify_playlists = get_spotify_playlists(request.user)
+    except Exception as e:
+        return render(request, 'blend.html', {
+            'error': f'Error getting Spotify playlists: {e}',
+        })
 
     # they've submitted something, so we process it
     if request.method == 'POST':
