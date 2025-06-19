@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 from core.blendify_utils import build_individual_playlist, build_combined_playlist, build_song_uris
-from core.spotify_utils import get_spotify_playlists, update_spotify_playlist, create_spotify_playlist
+from core.spotify_utils import get_spotify_playlists, update_spotify_playlist, create_spotify_playlist, update_spotify_access_token
 from core.blendify_utils import build_playlist_name, build_playlist_description
 
 from channels.layers import get_channel_layer
@@ -27,10 +27,10 @@ def lorumipsum(request):
 @login_required
 def blend(request):
 
-    error = None
+    update_spotify_access_token(request.user) # update the access token if it's expired
     spotify_playlists = get_spotify_playlists(request.user)
 
-    # TODO: They've submitted something, so we process it.
+    # they've submitted something, so we process it
     if request.method == 'POST':
         playlist_rename = request.POST.get('playlist_rename')
 
