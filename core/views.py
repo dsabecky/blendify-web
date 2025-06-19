@@ -81,7 +81,7 @@ def blend(request):
                     'error': f'Error creating new playlist: {e}',
                 })
         
-        # build the individual playlists, or fail gracefully
+        # build the individual playlists
         try:
             individual_playlists = {}
             for theme in themes:
@@ -93,7 +93,7 @@ def blend(request):
                 'error': f'Error building individual playlists: {e}',
             })
 
-        # build the combined playlist, or fail gracefully
+        # build the combined playlist
         send_progress(request.user.id, "Building combined playlist")
         try:
             combined_playlist = build_combined_playlist(individual_playlists)
@@ -103,7 +103,7 @@ def blend(request):
                 'error': f'Error building combined playlist: {e}',
             })
 
-        # grab URIs for the songs in the combined playlist, or fail gracefully
+        # grab URIs for the songs in the combined playlist
         try:
             send_progress(request.user.id, "Adding song URIs to database...")
             song_uris = build_song_uris(request.user, combined_playlist)
@@ -113,7 +113,7 @@ def blend(request):
                 'error': f'Error building song URIs: {e}',
             })
         
-        # build a name for the playlist (if selected), or fail gracefully
+        # build a name for the playlist (if selected)
         try:
             send_progress(request.user.id, "Creating a new playlist name...")
             playlist_name = build_playlist_name(combined_playlist, spotify_playlist_name, playlist_rename)
@@ -123,7 +123,7 @@ def blend(request):
                 'error': f'Error building playlist name: {e}',
             })
 
-        # build a description for the playlist (if selected), or fail gracefully
+        # build a description for the playlist (if selected)
         try:
             send_progress(request.user.id, "Creating a new playlist description...")
             playlist_description = build_playlist_description(request.user, combined_playlist, spotify_playlist_id, playlist_rename)
