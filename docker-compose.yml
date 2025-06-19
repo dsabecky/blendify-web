@@ -1,7 +1,7 @@
 services:
   blendify-web:
     container_name: blendify-web
-    image: nothaldu/blendify-web
+    image: nothaldu/blendify-web:latest
     hostname: blendify-web
     build: .
     volumes:
