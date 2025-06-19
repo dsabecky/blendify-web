@@ -1,4 +1,10 @@
 from django.db import models
+from social_django.models import UserSocialAuth
+
+# Add fields directly to the existing UserSocialAuth model
+UserSocialAuth.add_to_class('spotify_user_id', models.CharField(max_length=255, blank=True, null=True))
+UserSocialAuth.add_to_class('spotify_access_token', models.TextField(blank=True, null=True))
+UserSocialAuth.add_to_class('spotify_refresh_token', models.TextField(blank=True, null=True))
 
 class Playlist(models.Model):
     theme = models.CharField(max_length=255, db_index=True)
