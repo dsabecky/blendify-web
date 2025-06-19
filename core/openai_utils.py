@@ -1,6 +1,7 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -51,7 +52,10 @@ def generate_chatgpt_playlist_name(
             "- “sunday brunch acoustic glow” "
             "Generate a new playlist name in this style. "
         )},
-        { "role": "user", "content": f"The playlist contains the following songs: {prompt}" }
+        { "role": "user", "content": (
+            f"It is currently {datetime.now().strftime('%I:%M %p')} on {datetime.now().strftime('%A')}. "
+            f"The playlist contains the following songs: {prompt}"
+        )}
     ]
     return conversation
 
