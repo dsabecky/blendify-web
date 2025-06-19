@@ -2,6 +2,10 @@ import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
 import time
+import base64
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def create_spotify_playlist(
     user,
@@ -162,21 +166,20 @@ def get_spotify_song_uris(
     
     return results
 
-def update_spotify_access_token(
-    user,
-) -> bool:
-    """
-    Updates the Spotify access token for the user if it's expired.
-    """
-
+def update_spotify_access_token(user) -> bool:
     social = user.social_auth.filter(provider='spotify').first()
-    
     if social.extra_data.get('auth_time') > time.time() - 3500:
         return True
 
+    client_id = os.getenv('SPOTIFY_CLIENT_ID')
+    client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+
+    credentials = f"{client_id}:{client_secret}"
+    b64_credentials = base64.b64encode(credentials.encode()).decode()
+
     url = "https://accounts.spotify.com/api/token"
     headers = {
-        "Authorization": f"Basic {os.getenv('SOCIAL_AUTH_SPOTIFY_KEY')}:{os.getenv('SOCIAL_AUTH_SPOTIFY_SECRET')}",
+        "Authorization": f"Basic {b64_credentials}",
         "Content-Type": "application/x-www-form-urlencoded"
     }
     data = {
@@ -187,8 +190,10 @@ def update_spotify_access_token(
     resp = requests.post(url, headers=headers, data=data)
     if resp.status_code != 200:
         raise Exception(f"Failed to update access token: {resp.status_code} {resp.text}")
-    
+
     social.extra_data['access_token'] = resp.json()['access_token']
+    social.extra_data['auth_time'] = int(time.time())
+    social.extra_data = social.extra_data
     social.save()
     return True
 
