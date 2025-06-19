@@ -30,6 +30,17 @@
         padding-left: 0.5rem;
         padding-right: 0.5rem;
     }
+
+    .navbar-buttons-row {
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        align-items: center;
+    }
+    .navbar-buttons-row .nav-item {
+        margin-bottom: 0 !important;
+    }
 }
 
 .navbar .btn {
