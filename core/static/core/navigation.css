@@ -67,9 +67,17 @@
         margin-bottom: 0 !important;
     }
 
+    .logo-icon-link {
+        padding-top: 0.25rem;
+        padding-left: 0.25rem;
+        display: flex;
+        align-items: stretch;
+    }
+
     .logo-icon {
-        max-height: 2rem;
+        max-height: 3.5rem;
         margin-right: 0.5rem;
+        border-radius: 0.8rem;
     }
 }
 
