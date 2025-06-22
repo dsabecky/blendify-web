@@ -1,43 +1,48 @@
-<div class="navbar-float-wrapper">
-    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm floating-navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="/" style="font-size: 1.5rem;">Blendify</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav align-items-center navbar-buttons-row">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a href="{% url 'blend' %}" class="btn btn-violet mx-1">
-                                <i class="bi bi-magic"></i> Blend
-                            </a>
-                        </li>
-                        {% if user.is_staff %}
+{% load static %}
+<div class="navbar-outer-wrapper d-flex align-items-stretch">
+    <a href="/" class="logo-icon-link" style="display: flex; align-items: stretch;">
+        <img src="{% static 'core/blendify.png' %}" alt="Blendify Logo" class="logo-icon" />
+    </a>
+    <div class="navbar-float-wrapper flex-grow-1">
+        <nav class="navbar navbar-expand-lg navbar-dark shadow-sm floating-navbar">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav align-items-center navbar-buttons-row">
+                        {% if user.is_authenticated %}
                             <li class="nav-item">
-                                <a href="/admin/" class="btn btn-warning mx-1">
-                                    <i class="bi bi-shield-lock"></i> Admin
+                                <a href="{% url 'blend' %}" class="btn btn-violet mx-1">
+                                    <i class="bi bi-magic"></i> Blend
+                                </a>
+                            </li>
+                            {% if user.is_staff %}
+                                <li class="nav-item">
+                                    <a href="/admin/" class="btn btn-warning mx-1">
+                                        <i class="bi bi-shield-lock"></i> Admin
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger mx-1">
+                                        <i class="bi bi-box-arrow-right"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a href="{% url 'social:begin' 'spotify' %}" class="btn btn-success mx-1">
+                                    <i class="bi bi-spotify"></i> Login with Spotify
                                 </a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger mx-1">
-                                    <i class="bi bi-box-arrow-right"></i> Logout
-                                </button>
-                            </form>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a href="{% url 'social:begin' 'spotify' %}" class="btn btn-success mx-1">
-                                <i class="bi bi-spotify"></i> Login with Spotify
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 </div>

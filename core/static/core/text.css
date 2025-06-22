@@ -1,2 +1,11 @@
 .text-spotify { color: #1DB954 !important; }
 .text-violet { color: #a259f7 !important; }
+
+.outline-text {
+    text-shadow:
+        0 0 2px #000,
+        0 0 4px #000,
+        0 0 6px #000,
+        0 0 8px #000;
+    letter-spacing: 0.5px;
+}
