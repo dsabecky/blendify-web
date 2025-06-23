@@ -81,13 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 newPlaylistSection.style.display = 'block';
                 nameInput.value = '';
                 newPlaylistNameInput.required = true;
-                console.log("Selected: create_new (showing new playlist input)");
             } else {
                 // Hide the new playlist name input
                 newPlaylistSection.style.display = 'none';
                 newPlaylistNameInput.required = false;
                 newPlaylistNameInput.value = '';
-                console.log("Selected playlist:", nameInput.value);
         
                 // Set the selected playlist name
                 const selectedOption = select.options[select.selectedIndex];
@@ -97,14 +95,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Fetch and fill themes if not creating new
             if (select.value && select.value !== 'create_new') {
                 const url = `/get_playlist_themes/?playlist_name=${encodeURIComponent(nameInput.value)}`;
-                console.log("Fetching themes from:", url);
                 fetch(url)
                     .then(response => {
-                        console.log("Received response:", response);
                         return response.json();
                     })
                     .then(data => {
-                        console.log("Received data:", data);
                         const inputList = document.getElementById('input-list');
                         inputList.innerHTML = '';
                         if (data.themes && data.themes.length > 0) {

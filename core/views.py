@@ -31,8 +31,6 @@ def lorumipsum(request):
 def get_playlist_themes(request):
     playlist_name = request.GET.get('playlist_name')
     user_id = request.user.social_auth.filter(provider='spotify').first().uid
-    print(f"user_id: {user_id}")
-    print(f"playlist_name: {playlist_name}")
 
     generated = Generated.objects.filter(playlist_name=playlist_name, user_id=user_id).first()
     if generated:
