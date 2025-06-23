@@ -1,11 +1,28 @@
-from openai import OpenAI
+####################################################################
+# Library & Modules
+####################################################################
+
+# system level stuff
 import os
 from dotenv import load_dotenv
+
+# data analysis
 from datetime import datetime
 
-load_dotenv()
+# openai
+from openai import OpenAI
 
+
+####################################################################
+# Environment Variables
+####################################################################
+
+load_dotenv()
 openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+####################################################################
+# Functions
+####################################################################
 
 def generate_chatgpt_playlist(
     prompt: str,

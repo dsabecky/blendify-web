@@ -1,21 +1,47 @@
-from core.openai_utils import generate_chatgpt_playlist, generate_chatgpt_playlist_description, generate_chatgpt_playlist_name, invoke_chatgpt
-from core.spotify_utils import get_spotify_playlist_description, get_spotify_song_uris
+####################################################################
+# Library & Modules
+####################################################################
 
-from core.models import Playlist, Song
-
-import random
+# system level stuff
 import os
 import dotenv
+
+# data analysis
+import random
+
+# parallel processing
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+# blendify specific imports
+from core.openai_utils import generate_chatgpt_playlist, generate_chatgpt_playlist_description, generate_chatgpt_playlist_name, invoke_chatgpt
+from core.spotify_utils import get_spotify_playlist_description, get_spotify_track_uris
+from core.models import Playlist, Song
+
+
+####################################################################
+# Environment Variables
+####################################################################
+
 dotenv.load_dotenv()
+
+
+####################################################################
+# Functions
+####################################################################
 
 def build_individual_playlists(
     themes: list[str],
 ) -> dict[str, list[str]]:
     """
     Handler function for batch processing of ChatGPT generated playlists.
-    Returns a dictionary of themes, with their corresponding playlist.
+    
+    Parameters:
+    ---
+        themes: A list of themes to build playlists for.
+
+    Returns:
+    ---
+        A dictionary of themes, with their corresponding playlist.
     """
     with ThreadPoolExecutor(max_workers=5) as executor:
         futures = {executor.submit(build_individual_playlist, theme): theme for theme in themes}
@@ -27,7 +53,14 @@ def build_individual_playlist(
 ) -> list[str]:
     """
     Build an individual playlist for a given theme using ChatGPT.
-    Returns a list of songs.
+
+    Parameters:
+    ---
+        theme: The theme to build a playlist for.
+
+    Returns:
+    ---
+        A list of songs.
     """
 
     existing = Playlist.objects.filter(theme__iexact=theme).first()
@@ -45,6 +78,14 @@ def build_combined_playlist(
 ) -> list[str]:
     """
     Build a combined playlist from the individual playlists with even distribution.
+
+    Parameters:
+    ---
+        individual_playlists: A dictionary of themes, with their corresponding playlist.
+
+    Returns:
+    ---
+        A list of songs.
     """
 
     total_length = int(os.getenv('PLAYLIST_LENGTH', 10))
@@ -54,7 +95,7 @@ def build_combined_playlist(
     combined_playlist = []
     used_songs = set()
     
-    for i, (theme, playlist) in enumerate(individual_playlists.items()):
+    for i, playlist in enumerate(individual_playlists):
         current_sample_size = sample_size + (1 if i < remainder else 0)
         
         unique_songs = [song for song in playlist if song.lower() not in used_songs]
@@ -83,6 +124,16 @@ def build_playlist_name(
 ) -> str:
     """
     Build a name for a combined playlist.
+
+    Parameters:
+    ---
+        combined_playlist: A list of songs.
+        spotify_playlist_name: The name of the Spotify playlist.
+        playlist_rename: Whether to rename the playlist.
+
+    Returns:
+    ---
+        A string of the playlist name.
     """
     if playlist_rename:
         return invoke_chatgpt(generate_chatgpt_playlist_name(combined_playlist))
@@ -90,25 +141,45 @@ def build_playlist_name(
         return spotify_playlist_name
     
 def build_playlist_description(
-    user,
+    access_token: str,
     combined_playlist: list[str],
     spotify_playlist_id: str,
     playlist_rename: bool,
 ) -> str | None:
     """
     Build a description for a combined playlist.
+
+    Parameters:
+    ---
+        access_token: The user's Spotify access token.
+        combined_playlist: A list of songs.
+        spotify_playlist_id: The ID of the Spotify playlist.
+        playlist_rename: Whether to rename the playlist.
+
+    Returns:
+    ---
+        A string of the playlist description.
     """
     if playlist_rename:
         return invoke_chatgpt(generate_chatgpt_playlist_description(combined_playlist))
     else:
-        return get_spotify_playlist_description(user, spotify_playlist_id)
+        return get_spotify_playlist_description(access_token, spotify_playlist_id)
 
 def build_song_uris(
-    user,
+    access_token: str,
     song_list: list[str],
 ) -> list[str]:
     """
     Get URIs for songs using batch processing.
+
+    Parameters:
+    ---
+        access_token: The user's Spotify access token.
+        song_list: A list of songs.
+
+    Returns:
+    ---
+        A list of song URIs.
     """
     if not song_list:
         return []
@@ -130,7 +201,7 @@ def build_song_uris(
     uncached_songs = [song for song in song_list if song not in cached_songs]
     
     if uncached_songs:
-        new_uris = get_spotify_song_uris(user, uncached_songs)
+        new_uris = get_spotify_track_uris(access_token, uncached_songs)
         
         songs_to_create = []
         for song, uri in new_uris.items():
