@@ -25,7 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
             row.querySelectorAll('button').forEach(btn => btn.remove());
 
             if (idx === 0) {
-                // Plus button only on the first row
+                // First row: no button
+                return;
+            }
+            else if (idx === 1) {
+                // Second row: plus button
                 const plusBtn = document.createElement('button');
                 plusBtn.type = 'button';
                 plusBtn.className = 'btn btn-success ms-2 add-btn';
@@ -34,8 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     addInput();
                 };
                 row.appendChild(plusBtn);
-            } else {
-                // Minus button on all other rows
+            }
+            else {
+                // All other rows: minus button
                 const minusBtn = document.createElement('button');
                 minusBtn.type = 'button';
                 minusBtn.className = 'btn btn-danger ms-2 remove-btn';
