@@ -95,7 +95,7 @@ def build_combined_playlist(
     combined_playlist = []
     used_songs = set()
     
-    for i, playlist in enumerate(individual_playlists):
+    for i, playlist in enumerate(individual_playlists.values()):
         current_sample_size = sample_size + (1 if i < remainder else 0)
         
         unique_songs = [song for song in playlist if song.lower() not in used_songs]
