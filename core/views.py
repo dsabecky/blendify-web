@@ -99,7 +99,6 @@ def blend(request):
         try:# build the combined playlist
             send_progress(request.user.id, "Building combined playlist")
             combined_playlist = build_combined_playlist(individual_playlists)
-            Generated.objects.update_or_create(playlist_name=spotify_playlist_name, user_id=user_id, defaults={'themes': themes})
         except Exception as e:
             return render(request, 'blend.html', { 'spotify_playlists': spotify_playlists, 'error': f'Error building combined playlist: {e}' })
 
@@ -126,6 +125,8 @@ def blend(request):
             update_spotify_playlist(access_token, spotify_playlist_id, song_uris, playlist_name, playlist_description)
         except Exception as e:
             return render(request, 'blend.html', { 'spotify_playlists': spotify_playlists, 'error': f'Error updating playlist: {e}' })
+        
+        Generated.objects.update_or_create(playlist_name=playlist_name, user_id=user_id, defaults={'themes': themes})
         
         # great success, return the results
         return render(request, 'blend.html', {
