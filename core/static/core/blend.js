@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         rows.forEach((row, idx) => {
             // Remove all buttons first
             row.querySelectorAll('button').forEach(btn => btn.remove());
-
+    
             if (idx === 0) {
                 // First row: no button
                 return;
@@ -79,17 +79,55 @@ document.addEventListener('DOMContentLoaded', function() {
             if (select.value === 'create_new') {
                 // Show the new playlist name input
                 newPlaylistSection.style.display = 'block';
-                nameInput.value = ''; // Clear the hidden input
+                nameInput.value = '';
                 newPlaylistNameInput.required = true;
+                console.log("Selected: create_new (showing new playlist input)");
             } else {
                 // Hide the new playlist name input
                 newPlaylistSection.style.display = 'none';
                 newPlaylistNameInput.required = false;
                 newPlaylistNameInput.value = '';
-                
+                console.log("Selected playlist:", nameInput.value);
+        
                 // Set the selected playlist name
                 const selectedOption = select.options[select.selectedIndex];
                 nameInput.value = selectedOption.text;
+            }
+        
+            // Fetch and fill themes if not creating new
+            if (select.value && select.value !== 'create_new') {
+                const url = `/get_playlist_themes/?playlist_name=${encodeURIComponent(nameInput.value)}`;
+                console.log("Fetching themes from:", url);
+                fetch(url)
+                    .then(response => {
+                        console.log("Received response:", response);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Received data:", data);
+                        const inputList = document.getElementById('input-list');
+                        inputList.innerHTML = '';
+                        if (data.themes && data.themes.length > 0) {
+                            data.themes.forEach(theme => {
+                                const newRow = document.createElement('div');
+                                newRow.className = 'input-group mb-2';
+                                newRow.innerHTML = `
+                                    <input type="text" class="form-control" name="theme" value="${theme}" placeholder="Enter a theme">
+                                `;
+                                inputList.appendChild(newRow);
+                            });
+                        } else {
+                            for (let i = 0; i < 2; i++) {
+                                const newRow = document.createElement('div');
+                                newRow.className = 'input-group mb-2';
+                                newRow.innerHTML = `
+                                    <input type="text" class="form-control" name="theme" placeholder="Enter a theme">
+                                `;
+                                inputList.appendChild(newRow);
+                            }
+                        }
+                        updateButtons();
+                    });
             }
         });
         

@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Playlist, Song
+from .models import Playlist, Song, Generated
+
+@admin.register(Generated)
+class GeneratedAdmin(admin.ModelAdmin):
+    list_display = ('playlist_name', 'user_id', 'themes')
 
 @admin.register(Playlist)
 class PlaylistAdmin(admin.ModelAdmin):

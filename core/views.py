@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+
+from core.models import Generated
 
 from core.blendify_utils import build_individual_playlists, build_combined_playlist, build_song_uris
 from core.spotify_utils import create_spotify_playlist, get_spotify_playlists, update_spotify_access_token, update_spotify_playlist
@@ -23,6 +26,19 @@ def home(request):
 
 def lorumipsum(request):
     return render(request, 'lorumipsum.html')
+
+@login_required
+def get_playlist_themes(request):
+    playlist_name = request.GET.get('playlist_name')
+    user_id = request.user.social_auth.filter(provider='spotify').first().uid
+    print(f"user_id: {user_id}")
+    print(f"playlist_name: {playlist_name}")
+
+    generated = Generated.objects.filter(playlist_name=playlist_name, user_id=user_id).first()
+    if generated:
+        return JsonResponse({'themes': generated.themes})
+    else:
+        return JsonResponse({'themes': []})
 
 @login_required
 def blend(request):
@@ -85,6 +101,7 @@ def blend(request):
         try:# build the combined playlist
             send_progress(request.user.id, "Building combined playlist")
             combined_playlist = build_combined_playlist(individual_playlists)
+            Generated.objects.update_or_create(playlist_name=spotify_playlist_name, user_id=user_id, defaults={'themes': themes})
         except Exception as e:
             return render(request, 'blend.html', { 'spotify_playlists': spotify_playlists, 'error': f'Error building combined playlist: {e}' })
 

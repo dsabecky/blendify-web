@@ -1,5 +1,13 @@
 from django.db import models
 
+class Generated(models.Model):
+    playlist_name = models.CharField(max_length=255)
+    user_id = models.CharField(max_length=255)
+    themes = models.JSONField()
+
+    def __str__(self):
+        return f"{self.playlist_name} ({self.user_id})"
+
 class Playlist(models.Model):
     theme = models.CharField(max_length=255, db_index=True)
     song_list = models.JSONField(default=list)
