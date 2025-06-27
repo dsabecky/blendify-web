@@ -27,6 +27,9 @@ def home(request):
 def lorumipsum(request):
     return render(request, 'lorumipsum.html')
 
+def hathor(request):
+    return render(request, 'hathor.html')
+
 @login_required
 def get_playlist_themes(request):
     playlist_name = request.GET.get('playlist_name')
