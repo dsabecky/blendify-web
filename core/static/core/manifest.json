@@ -1,0 +1,20 @@
+{
+    "name": "Blendify Web",
+    "short_name": "Blendify",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#18181b",
+    "theme_color": "#7c3aed",
+    "icons": [
+      {
+        "src": "/static/core/blendify.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/static/core/blendify.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
