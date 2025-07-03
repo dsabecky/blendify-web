@@ -3,8 +3,8 @@
     "short_name": "Blendify",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#18181b",
-    "theme_color": "#7c3aed",
+    "background_color": "#212529",
+    "theme_color": "#a259f7",
     "icons": [
       {
         "src": "/static/core/blendify.png",
